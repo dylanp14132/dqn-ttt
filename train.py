@@ -28,18 +28,17 @@ class ReplayBuffer:
 
 def plot_results(wins, draws, losses, eps):
     plt.clf()
+    plt.gcf().canvas.manager.set_window_title("Training results")
     plt.xlabel("Episode")
     plt.ylabel("Rate")
     plt.title("Agent vs minimax bot")
     plt.ylim(0, 1)
-    #plt.xlim(xmin=0)
-    plt.plot(eps, wins, label='wins')
-    plt.plot(eps, draws, label='draws')
-    plt.plot(eps, losses, label='losses')
+    plt.plot(eps, wins, label='win rate')
+    plt.plot(eps, draws, label='draw rate')
+    plt.plot(eps, losses, label='loss rate')
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.show(block=False)
     plt.pause(.1)
 
 
@@ -128,8 +127,10 @@ def train(num_episodes=10000, batch_size=64, start_training_after=500, eval_ever
             print(f"ep {ep:6d} epsilon={epsilon:.3f} vs minimax -> "
                   f"win {win/200:.2f} draw {draw/200:.2f} loss {loss/200:.2f}")
 
-    return agent
+    return wins, draws, losses, eps
 
 
 if __name__ == '__main__':
-    train(eval_every=50)
+    w, d, l, e = train(eval_every=50)
+    while True:
+        plot_results(w, d, l, e)
