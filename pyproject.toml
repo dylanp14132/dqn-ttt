@@ -1,0 +1,10 @@
+[project]
+name = "dqn-ttt"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "numpy>=2.4.4",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+]
