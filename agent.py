@@ -2,6 +2,7 @@ import random
 import torch
 import torch.nn as nn
 
+
 class QNetwork(nn.Module):
     def __init__(self):
         super().__init__()
@@ -11,12 +12,11 @@ class QNetwork(nn.Module):
             nn.Linear(128, 9),
         )
 
-
     def forward(self, x):
         return self.network(x)
 
 
-def masked_argmax(q_values, legal_actions): # Get the highest Q-Value from all legal actions
+def masked_argmax(q_values, legal_actions):  # Get the highest Q-Value from all legal actions
     mask = torch.full((9,), float("-inf"))
     mask[legal_actions] = 0.0
     return int(torch.argmax(q_values + mask))
@@ -28,7 +28,6 @@ class Agent:
         self.qnet = QNetwork().to(self.device)
         self.optimizer = torch.optim.Adam(self.qnet.parameters(), lr=lr)
 
-
     def act(self, observation, legal_actions, epsilon):
         if random.random() < epsilon:
             return int(random.choice(legal_actions))
@@ -36,7 +35,6 @@ class Agent:
             obs_t = torch.tensor(observation.flatten(), dtype=torch.float32, device=self.device)
             q = self.qnet(obs_t)
             return masked_argmax(q.cpu(), legal_actions)
-
 
     def train_step(self, observation, actions, returns):
         observation = torch.tensor(observation, dtype=torch.float32, device=self.device)

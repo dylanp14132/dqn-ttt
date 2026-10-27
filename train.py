@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 
 from game import TicTacToe
 from agent import Agent
-from opponents import random_bot, minimax_bot
+from opponents import minimax_bot
 
 plt.ion()
+
 
 class ReplayBuffer:
     def __init__(self, capacity=20000):
@@ -40,6 +41,23 @@ def plot_results(wins, draws, losses, eps):
     plt.grid(alpha=0.3)
     plt.tight_layout()
     plt.pause(.1)
+
+
+def plot_final_results(wins, draws, losses, eps):
+    plt.ioff()
+    plt.clf()
+    plt.gcf().canvas.manager.set_window_title("Training results")
+    plt.xlabel("Episode")
+    plt.ylabel("Rate")
+    plt.title("Agent vs minimax bot")
+    plt.ylim(0, 1)
+    plt.plot(eps, wins, label='win rate')
+    plt.plot(eps, draws, label='draw rate')
+    plt.plot(eps, losses, label='loss rate')
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
 
 
 def play_episode(game, agent, epsilon, opponent=None):
@@ -97,7 +115,7 @@ def evaluate(game, agent, opponent, n=200):
     return wins, draws, losses
 
 
-def train(num_episodes=10000, batch_size=64, start_training_after=500, eval_every=1000, self_play_after=5000):
+def train(num_episodes=10000, batch_size=64, start_training_after=500, eval_every=50, self_play_after=5000):
     print("Starting...")
 
     game = TicTacToe()
@@ -122,15 +140,14 @@ def train(num_episodes=10000, batch_size=64, start_training_after=500, eval_ever
 
         if ep % eval_every == 0 and ep > 0:
             win, draw, loss = evaluate(game, agent, minimax_bot, n=200)
-            wins.append(win/200), draws.append(draw/200), losses.append(loss/200), eps.append(ep)
+            wins.append(win / 200), draws.append(draw / 200), losses.append(loss / 200), eps.append(ep)
             plot_results(wins, draws, losses, eps)
             print(f"ep {ep:6d} epsilon={epsilon:.3f} vs minimax -> "
-                  f"win {win/200:.2f} draw {draw/200:.2f} loss {loss/200:.2f}")
+                  f"win {win / 200:.2f} draw {draw / 200:.2f} loss {loss / 200:.2f}")
 
     return wins, draws, losses, eps
 
 
 if __name__ == '__main__':
-    w, d, l, e = train(eval_every=50)
-    while True:
-        plot_results(w, d, l, e)
+    w, d, l, e = train()
+    plot_final_results(w, d, l, e)

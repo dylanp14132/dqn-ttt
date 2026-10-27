@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class TicTacToe:
     def __init__(self):
         self.board = np.zeros((3, 3), dtype=np.int8)
@@ -7,28 +8,25 @@ class TicTacToe:
         self.winner = 0
         self.game_over = False
 
-
     def reset(self):
         self.board[:] = 0
         self.current_player = 1
         self.winner = 0
         self.game_over = False
 
-
     def get_observation(self):
         return self.board * self.current_player
-
 
     def step(self, action):
         if self.game_over:
             raise RuntimeError('Game over')
 
-        r,c = divmod(action, 3)
+        r, c = divmod(action, 3)
 
-        if self.board[r,c] != 0:
+        if self.board[r, c] != 0:
             raise RuntimeError('Invalid move')
 
-        self.board[r,c] = self.current_player
+        self.board[r, c] = self.current_player
 
         if self._check_win(self.current_player):
             self.game_over = True
@@ -46,12 +44,10 @@ class TicTacToe:
 
         return reward, self.game_over
 
-
     def legal_moves(self):
         return np.flatnonzero(self.board == 0)
 
-
-    def _check_win(self, player): # TODO : Could be made simpler
+    def _check_win(self, player):  # TODO : Could be made simpler
         for i in range(3):
             if (self.board[i][0] == self.board[i][1] == self.board[i][2]) and (self.board[i][0] == player):
                 return True
@@ -64,7 +60,6 @@ class TicTacToe:
             return True
         else:
             return False
-
 
     def get_input(self, row, col):
         action = np.zeros_like(self.board)
